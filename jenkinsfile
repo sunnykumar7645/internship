@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code from version control
+                // For example, using Git
+                git 'https://github.com/sunnykumar7645/jenkins.git'
+            }
+        }
+
+        stage('Deploy Stack') {
+            steps {
+
+                withCredentials([
+                    [ $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credential-configuration',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_ID' ]
+                ]) {
+                    // Create or update the CloudFormation stack
+                    bat 'aws cloudformation create-stack --stack-name jenkins --template-body file://ec2-instance.yaml --parameters ParameterKey=SecurityGroupDescription,ParameterValue="create multiple inbound rule"'
+                }
+                // script {
+                //     bat 'aws configure set aws_access_key_id AKIA2KOIKQVYDVVY3L4C'
+                //     bat 'aws configure set aws_secret_access_key 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'
+                //     bat "aws configure set default.region ap-south-1"
+
+                    
+                //     // Create or update the CloudFormation stack
+                //     bat 'aws cloudformation create-stack --stack-name jenkins --template-body file://ec2-instance.yaml --parameters ParameterKey=SecurityGroupDescription,ParameterValue="create multiple inbound rule"'
+                // }
+            }
+        }
+    }
+}
+
+
+withCredentials([
+                    [ $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credential-configuration',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_ID' ]
+                ]) {
+                    // Create or update the CloudFormation stack
+                    bat 'aws cloudformation create-stack --stack-name jenkins --template-body file://ec2-instance.yaml --parameters ParameterKey=SecurityGroupDescription,ParameterValue="create multiple inbound rule"'
+                }
+                

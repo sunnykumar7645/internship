@@ -1,0 +1,4 @@
+tls:
+    - hosts:
+        - angular-app.com # Replace with your domain or IP
+      secretName: my-tls-secret # Replace with the name of your Secret

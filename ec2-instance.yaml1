@@ -1,0 +1,57 @@
+Parameters:
+  SecurityGroupDescription:
+    Description: SecurityGroupDescription
+    Type: String
+Resources:
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-057752b3f1d6c4d6c
+      InstanceType: t2.micro
+      Tags:
+        - Key: Name
+          Value: cloudformation19
+      KeyName: cloudformation
+      SecurityGroups:
+        - !Ref SecurityGroupMu1
+      UserData:
+        Fn::Base64: 
+          !Sub 
+            - |
+              #!/bin/bash
+              sudo yum update -y 
+              sudo yum install docker -y
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              docker pull techhouse1901/dockerdoc:latest
+              docker run -d -p 8080:8080 -p 8443:8443 techhouse1901/dockerdoc
+              mkdir /home/ec2-user/${DirName}
+            - { DirName: !Join [ '-', [ !Ref AWS::StackName, !Ref AWS::Region, 'customdir' ] ] }
+  ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref MyInstance
+  SecurityGroupMu1:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Ref SecurityGroupDescription
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0 # Replace with the desired CIDR range
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0 # Replace with the desired CIDR range
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+        
+# aws cloudformation create-stack --stack-name jenkins --template-body file://ec2-instance.yaml --parameters ParameterKey=SecurityGroupDescription,ParameterValue="create multiple inbound rule"
+

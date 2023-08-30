@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kube-ingress
+spec:
+  tls:
+    - hosts:
+        - angular-app.com # Replace with your cluster DNS name
+        - react-app.com
+      secretName: self-signed
+  rules:
+    - host: angular-app.com # Replace with your cluster DNS name
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: angular-svc
+                port:
+                  number: 80
+    - host: react-app.com # Replace with your cluster DNS name
+      http:
+        paths:
+          - pathType: Prefix
+            path: /sample-1
+            backend:
+              service:
+                name: sample-svc
+                port:
+                  number: 3000
+    - host: react-app.com # Replace with your cluster DNS name
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: react-svc
+                port:
+                  number: 3000

@@ -1,0 +1,53 @@
+version: '3'
+services:
+  container1:
+    image: 'techhouse1901/reactdoc'
+    ports:
+      - 3000:3000
+    networks:
+      - cloudNetwork
+  container2:
+    image: 'techhouse1901/dockerdoc'
+    ports:
+      - 8443:8443
+      - 8081:8080
+    networks:
+      - cloudNetwork
+  container3:
+    image: 'nginx'
+    ports:
+      - 80:80
+    networks:
+      - cloudNetwork
+
+networks:
+  cloudNetwork:
+    driver: bridge
+
+
+
+# version: '3'
+# services:
+#   container1:
+#     image: 'node'
+#     networks:
+#       - cloudNetwork
+#   container2:
+#     image: 'techhouse1901/dockerdoc'
+#     networks:
+#       - cloudNetwork
+#   container3:
+#     image: 'nginx'
+#     networks:
+#       - cloudNetwork
+#   container4:
+#     image: 'techhouse1901/firstjspprogram'
+#     networks:
+#       - cloudNetwork
+#   container5:
+#     image: 'hello-world'
+#     networks:
+#       - cloudNetwork
+# networks:
+#   cloudNetwork:
+#     driver: bridge
